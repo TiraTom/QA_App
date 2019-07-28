@@ -137,13 +137,9 @@ class LoginActivity : AppCompatActivity() {
     private fun saveName(name: String) {
         // Preferenceに保存する
         val sp = getSharedPreferences(NameKEY, Context.MODE_PRIVATE)
-        sp.edit {
-            putString(NameKEY, name)
-        }
-
-
-
-
+        var editor = sp.edit()
+        editor.putString(NameKEY, name)
+        editor.commit()
     }
 
     private fun login(email: String, password: String) {
