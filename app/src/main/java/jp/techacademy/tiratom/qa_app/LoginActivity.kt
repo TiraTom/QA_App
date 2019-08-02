@@ -104,7 +104,27 @@ class LoginActivity : AppCompatActivity() {
         title = "ログイン"
 
         createButton.setOnClickListener { v ->
-            // キーボードが出ていたら閉じる
+            // キーボードが出てたら閉じる
+            val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            im.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
+            val email = emailText.text.toString()
+            val password = passwordText.text.toString()
+            val name = nameText.text.toString()
+
+            if (email.length != 0 && password.length >= 6 && name.length != 0) {
+                // ログイン時に表示名を保存するようにフラグを立てる
+                mIsCreateAccount = true
+
+                createAccount(email, password)
+            } else {
+                // エラーを表示する
+                Snackbar.make(v, "正しく入力してください", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        loginButton.setOnClickListener { v ->
+            // キーボードが出てたら閉じる
             val im = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             im.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
@@ -122,6 +142,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun createAccount(email: String, password: String)
     {
