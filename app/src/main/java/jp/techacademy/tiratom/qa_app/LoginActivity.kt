@@ -1,19 +1,23 @@
 package jp.techacademy.tiratom.qa_app
 
 import android.content.Context
-import android.inputmethodservice.InputMethodService
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.edit
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_login.*
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ValueEventListener
+import java.util.*
+import kotlin.collections.HashMap
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -21,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mCreateAccountListener: OnCompleteListener<AuthResult>
     private lateinit var mLoginListener: OnCompleteListener<AuthResult>
     private lateinit var mDataBaseReference: DatabaseReference
+    private lateinit var m_Database: FirebaseDatabase
 
     // アカウント作成時にフラグを立て、ログイン処理後に名前をFirebaseに登録する
     private var mIsCreateAccount = false
@@ -30,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         mDataBaseReference = FirebaseDatabase.getInstance().reference
+        m_Database = FirebaseDatabase.getInstance()
 
         // FirebaseAuthのオブジェクトを取得
         mAuth = FirebaseAuth.getInstance()
@@ -144,6 +150,27 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+    override fun onStart() {
+        super.onStart()
+
+        val endAt: Double = Date().getTime().toDouble() // Dynamic value: NO CRASH
+        getGoal("min_per_day", endAt, "some_uid")
+    }
+
+    private fun getGoal(p_goalId: String, p_endAt: Double, p_uid: String) {
+        val ref = m_Database.getReference("v0/data/meditation/goals").child(p_goalId).child(p_uid)
+            .orderByChild("time").endAt(p_endAt).limitToLast(1)
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.i("FB", "Snapshot: $dataSnapshot")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FB", "Error: $error")
+            }
+        })
+    }
 
     private fun createAccount(email: String, password: String)
     {
