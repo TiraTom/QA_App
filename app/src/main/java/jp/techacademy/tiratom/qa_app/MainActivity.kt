@@ -59,30 +59,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+
+        val id = item.itemId
+
+        if (id == R.id.action_settings) {
+            val intent = Intent(applicationContext, SettingActivity::class.java)
+            startActivity(intent)
+            return true
         }
+
+        return super.onOptionsItemSelected(item)
+
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
 
-        if (id == R.id.nav_hobby) {
-            mToolbar.title = "趣味"
-            mGenre = 1
-        } else if (id == R.id.nav_life) {
-            mToolbar.title = "生活"
-            mGenre = 2
-        } else if (id == R.id.nav_health) {
-            mToolbar.title = "健康"
-            mGenre = 3
-        } else if (id == R.id.nav_computer) {
-            mToolbar.title = "コンピューター"
-            mGenre = 4
+        when (item.itemId) {
+            R.id.nav_hobby -> {
+                mToolbar.title = "趣味"
+                mGenre = 1
+            }
+            R.id.nav_life -> {
+                mToolbar.title = "生活"
+                mGenre = 2
+            }
+            R.id.nav_health -> {
+                mToolbar.title = "健康"
+                mGenre = 3
+            }
+            R.id.nav_computer -> {
+                mToolbar.title = "コンピューター"
+                mGenre = 4
+            }
         }
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)

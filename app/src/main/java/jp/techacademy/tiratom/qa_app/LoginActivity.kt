@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mCreateAccountListener: OnCompleteListener<AuthResult>
     private lateinit var mLoginListener: OnCompleteListener<AuthResult>
     private lateinit var mDataBaseReference: DatabaseReference
-    private lateinit var m_Database: FirebaseDatabase
 
     // アカウント作成時にフラグを立て、ログイン処理後に名前をFirebaseに登録する
     private var mIsCreateAccount = false
@@ -35,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         mDataBaseReference = FirebaseDatabase.getInstance().reference
-        m_Database = FirebaseDatabase.getInstance()
 
         // FirebaseAuthのオブジェクトを取得
         mAuth = FirebaseAuth.getInstance()
@@ -149,29 +147,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-
-        val endAt: Double = Date().getTime().toDouble() // Dynamic value: NO CRASH
-        getGoal("min_per_day", endAt, "some_uid")
-    }
-
-    private fun getGoal(p_goalId: String, p_endAt: Double, p_uid: String) {
-        val ref = m_Database.getReference("v0/data/meditation/goals").child(p_goalId).child(p_uid)
-            .orderByChild("time").endAt(p_endAt).limitToLast(1)
-
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.i("FB", "Snapshot: $dataSnapshot")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FB", "Error: $error")
-            }
-        })
-    }
-
     private fun createAccount(email: String, password: String)
     {
          // プログレスバーを表示する
@@ -185,7 +160,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun saveName(name: String) {
         // Preferenceに保存する
-        val sp = getSharedPreferences(NameKEY, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(PreferenceKEY, Context.MODE_PRIVATE)
         var editor = sp.edit()
         editor.putString(NameKEY, name)
         editor.commit()
