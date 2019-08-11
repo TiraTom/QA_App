@@ -15,15 +15,12 @@ class QuestionDetailActivity : AppCompatActivity() {
 
     private val mEventListener = object: ChildEventListener {
         override fun onCancelled(p0: DatabaseError) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -50,7 +47,6 @@ class QuestionDetailActivity : AppCompatActivity() {
         }
 
         override fun onChildRemoved(p0: DataSnapshot) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
     }
