@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
                 login(email, password)
             } else {
                 // 失敗した場合、エラーを表示する
-                val view = findViewById<View>(R.id.content)
+                val view = findViewById<View>(android.R.id.content)
                 Snackbar.make(view, "アカウント作成に失敗しました", Snackbar.LENGTH_LONG).show()
 
                 //プログレスバーを非表示にする
@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
                             saveName(data!!["name"] as String)
                         }
 
-                        override fun onCancelled(p0: DatabaseError) {}
+                        override fun onCancelled(firebaseError: DatabaseError) {}
 
                     })
                 }
@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
 
             } else {
                 // 失敗した場合,エラーを表示する
-                val view = findViewById<View>(R.id.content)
+                val view = findViewById<View>(android.R.id.content)
                 Snackbar.make(view, "ログインに失敗しました", Snackbar.LENGTH_LONG).show()
 
                 // プログレスバーを非表示にする
@@ -171,7 +171,7 @@ class LoginActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
 
         // ログインする
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mLoginListener)
 
     }
 }
