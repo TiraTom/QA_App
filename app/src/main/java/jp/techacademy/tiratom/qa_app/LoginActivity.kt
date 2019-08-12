@@ -86,6 +86,8 @@ class LoginActivity : AppCompatActivity() {
                     })
                 }
 
+
+
                 // プログレスバーを非表示にする
                 progressBar.visibility = View.GONE
 

@@ -1,14 +1,19 @@
 package jp.techacademy.tiratom.qa_app
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.widget.Toolbar
+import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_question_detail.*
 
-class QuestionDetailActivity : AppCompatActivity() {
-
+class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
@@ -27,7 +32,6 @@ class QuestionDetailActivity : AppCompatActivity() {
             val map = dataSnapshot.value as Map<String,String>
 
             val answerUid = dataSnapshot.key ?: ""
-
 
             for (answer in mQuestion.answers) {
                 // 同じAnswerUidのものが存在しているときは何もしない
@@ -53,7 +57,33 @@ class QuestionDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_question_detail)
+
+
+
+        // Toolbarの設定
+        setSupportActionBar(findViewById(R.id.questionDetailToolbar))
+
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.questionDetailToolbar)
+        toolbar.inflateMenu(R.menu.activity_question_detail_favorite)
+        toolbar.setTitle("hogeho")
+
+//        toolbar.setOnMenuItemClickListener{item ->
+//
+//            when(item.itemId) {
+//                R.id.favoriteIcon -> {
+//                    val databaseReference = FirebaseDatabase.getInstance().reference
+//                    val userUid = FirebaseAuth.getInstance().currentUser!!.uid
+//                    val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
+//                    favoriteReference.addChildEventListener(this)
+//                    favoriteReference.push().setValue(mQuestion.questionUid)
+//                }
+//            }
+//
+//            true
+//        }
+
 
         //　渡ってきたQuestionオブジェクトを保持
         val extras = intent.extras
@@ -85,5 +115,31 @@ class QuestionDetailActivity : AppCompatActivity() {
         val databaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = databaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
+
+
     }
+
+    override fun onCancelled(p0: DatabaseError) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChildRemoved(p0: DataSnapshot) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+
+
 }

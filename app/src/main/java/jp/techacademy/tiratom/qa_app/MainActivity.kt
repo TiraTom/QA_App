@@ -17,6 +17,8 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import io.realm.Realm
+import io.realm.RealmChangeListener
 
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -63,8 +65,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             val question = Question(
                 title, body, name, uid, dataSnapshot.key ?: "",
-                mGenre, bytes, answerArrayList
-            )
+                mGenre, bytes, answerArrayList)
             mQuestionArrayList.add(question)
             mAdapter.notifyDataSetChanged()
         }

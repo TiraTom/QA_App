@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context="jp.techacademy.tiratom.qa_app.QuestionDetailActivity">
+    <item
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:id="@+id/favoriteIcon"
+            android:icon="@drawable/ic_star_border_black_24dp"
+            android:title="favoriteIcon"
+            app:showAsAction="always"/>
+
+</menu>

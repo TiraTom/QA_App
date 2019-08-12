@@ -14,7 +14,9 @@
             android:theme="@style/AppTheme">
         <activity android:name=".AnswerSendActivity">
         </activity>
-        <activity android:name=".QuestionDetailActivity">
+        <activity
+                android:name=".QuestionDetailActivity"
+                android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".QuestionSendActivity">
         </activity>
