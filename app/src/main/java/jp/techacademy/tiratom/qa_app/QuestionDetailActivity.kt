@@ -17,7 +17,7 @@ import android.view.MenuInflater
 
 
 
-class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
+class QuestionDetailActivity : AppCompatActivity() {
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
@@ -65,8 +65,6 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
 
         setContentView(R.layout.activity_question_detail)
 
-
-
         // Toolbarの設定
         setSupportActionBar(findViewById(R.id.questionDetailToolbar))
 
@@ -102,27 +100,6 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
         mAnswerRef.addChildEventListener(mEventListener)
     }
 
-    override fun onCancelled(p0: DatabaseError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onChildRemoved(p0: DataSnapshot) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_question_detail_favorite, menu)
@@ -135,7 +112,6 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
                 val databaseReference = FirebaseDatabase.getInstance().reference
                 val userUid = FirebaseAuth.getInstance().currentUser!!.uid
                 val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
-                favoriteReference.addChildEventListener(this)
                 favoriteReference.push().setValue(mQuestion.questionUid)
             }
         }
@@ -143,3 +119,12 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
         return true
     }
 }
+
+
+// お気に入りアイコン設定メモ
+//if (favoriteQuestions.containsValue(mQuestion.questionUid)) {
+//    favoriteButton.setImageResource(R.drawable.ic_star_black_24dp)
+//} else {
+//    favoriteButton.setImageResource(R.drawable.ic_star_border_black_24dp)
+//}
+
