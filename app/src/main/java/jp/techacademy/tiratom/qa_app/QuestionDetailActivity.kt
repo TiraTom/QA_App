@@ -4,19 +4,24 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
+import android.view.*
 import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_question_detail.*
+import kotlinx.android.synthetic.main.activity_question_detail.fab
+import kotlinx.android.synthetic.main.app_bar_main.*
+import android.R.menu
+import android.view.MenuInflater
+
+
 
 class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
+    private var isFavoriteQuestion: Boolean = false
 
     private val mEventListener = object: ChildEventListener {
         override fun onCancelled(p0: DatabaseError) {
@@ -65,25 +70,6 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
         // Toolbarの設定
         setSupportActionBar(findViewById(R.id.questionDetailToolbar))
 
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.questionDetailToolbar)
-        toolbar.inflateMenu(R.menu.activity_question_detail_favorite)
-
-        toolbar.setOnMenuItemClickListener{item ->
-
-            when(item.itemId) {
-                R.id.favoriteIcon -> {
-                    val databaseReference = FirebaseDatabase.getInstance().reference
-                    val userUid = FirebaseAuth.getInstance().currentUser!!.uid
-                    val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
-                    favoriteReference.addChildEventListener(this)
-                    favoriteReference.push().setValue(mQuestion.questionUid)
-                }
-            }
-
-            true
-        }
-
-
         //　渡ってきたQuestionオブジェクトを保持
         val extras = intent.extras
         mQuestion = extras!!.get("question") as Question
@@ -114,8 +100,6 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
         val databaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = databaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
-
-
     }
 
     override fun onCancelled(p0: DatabaseError) {
@@ -139,6 +123,23 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.activity_question_detail_favorite, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.favoriteIcon -> {
+                val databaseReference = FirebaseDatabase.getInstance().reference
+                val userUid = FirebaseAuth.getInstance().currentUser!!.uid
+                val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
+                favoriteReference.addChildEventListener(this)
+                favoriteReference.push().setValue(mQuestion.questionUid)
+            }
+        }
 
+        return true
+    }
 }
