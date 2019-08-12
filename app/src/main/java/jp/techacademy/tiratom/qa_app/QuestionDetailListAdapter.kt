@@ -21,7 +21,6 @@ class QuestionDetailListAdapter(context: Context, private val mQuestion: Questio
     }
 
     private var mLayoutInflater: LayoutInflater? = null
-    private lateinit var favoriteButton: ImageButton
 
     init {
         mLayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -62,13 +61,6 @@ class QuestionDetailListAdapter(context: Context, private val mQuestion: Questio
                 val image = BitmapFactory.decodeByteArray(bytes, 0, bytes.size).copy(Bitmap.Config.ARGB_8888, true)
                 val imageView = convertView.findViewById<View>(R.id.imageView) as ImageView
                 imageView.setImageBitmap(image)
-            }
-
-            favoriteButton = convertView.findViewById<View>(R.id.favoriteIcon) as ImageButton
-
-            // お気に入りボタンにお気に入り登録・解除機能を設定
-            favoriteButton.setOnClickListener { favoriteButton ->
-                // TODO
             }
 
         } else {

@@ -5,5 +5,6 @@ const val ContentsPATH = "contents" // Firebaseに質問を保存するバス
 const val AnswersPATH = "answers"   // Firebaseに解答を保存するパス
 const val NameKEY = "name"          // Preferenceに表示名を保存する時のキー
 const val FavoritePATH = "favorite" // Firebaseにユーザごとのお気に入りの質問を保存するパス
+const val GenreKey = "genre"        // Firebaseにお気に入りの質問を登録する際に一緒に登録するGenreのキー
 
 const val PreferenceKEY = "QAAppPreference"  // SharedPreferenceのファイル名
