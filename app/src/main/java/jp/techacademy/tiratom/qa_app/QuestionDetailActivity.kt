@@ -67,22 +67,21 @@ class QuestionDetailActivity : AppCompatActivity(), ChildEventListener {
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.questionDetailToolbar)
         toolbar.inflateMenu(R.menu.activity_question_detail_favorite)
-        toolbar.setTitle("hogeho")
 
-//        toolbar.setOnMenuItemClickListener{item ->
-//
-//            when(item.itemId) {
-//                R.id.favoriteIcon -> {
-//                    val databaseReference = FirebaseDatabase.getInstance().reference
-//                    val userUid = FirebaseAuth.getInstance().currentUser!!.uid
-//                    val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
-//                    favoriteReference.addChildEventListener(this)
-//                    favoriteReference.push().setValue(mQuestion.questionUid)
-//                }
-//            }
-//
-//            true
-//        }
+        toolbar.setOnMenuItemClickListener{item ->
+
+            when(item.itemId) {
+                R.id.favoriteIcon -> {
+                    val databaseReference = FirebaseDatabase.getInstance().reference
+                    val userUid = FirebaseAuth.getInstance().currentUser!!.uid
+                    val favoriteReference = databaseReference.child(FavoritePATH).child(userUid)
+                    favoriteReference.addChildEventListener(this)
+                    favoriteReference.push().setValue(mQuestion.questionUid)
+                }
+            }
+
+            true
+        }
 
 
         //　渡ってきたQuestionオブジェクトを保持
