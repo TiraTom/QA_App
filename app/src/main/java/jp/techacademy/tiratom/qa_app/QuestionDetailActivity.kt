@@ -137,7 +137,6 @@ class QuestionDetailActivity : AppCompatActivity() {
 
                 if (isFavoriteQuestion) {
                     // お気に入りの取り消しを行う
-                    // TODO 消せてなさそう
                     mFavoriteRef.child(mQuestion.questionUid).removeValue()
 
                     isFavoriteQuestion = false
@@ -168,12 +167,14 @@ class QuestionDetailActivity : AppCompatActivity() {
         }
 
         override fun onChildAdded(databaseSnapshot: DataSnapshot, s: String?) {
-            val data = databaseSnapshot.value as Map<String, String>
             // Firebaseに今の表示している質問がお気に入り登録されていれば、お気に入りフラグを立てる
-            isFavoriteQuestion = data != null
+            if (databaseSnapshot.key == mQuestion.questionUid) {
+                isFavoriteQuestion = true
+            }
         }
 
         override fun onChildRemoved(databaseSnapshot: DataSnapshot) {
+            isFavoriteQuestion = false
         }
 
 
