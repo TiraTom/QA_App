@@ -17,7 +17,6 @@ class QuestionsListAdapter(context: Context): BaseAdapter() {
 
     init {
         mLayoutInflator = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

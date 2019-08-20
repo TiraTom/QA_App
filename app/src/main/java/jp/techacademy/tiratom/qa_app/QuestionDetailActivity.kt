@@ -23,6 +23,9 @@ class QuestionDetailActivity : AppCompatActivity() {
     private lateinit var mAnswerRef: DatabaseReference
     private lateinit var mFavoriteRef: DatabaseReference
     private var isFavoriteQuestion: Boolean = false
+    private lateinit var favoriteIcon: MenuItem
+    private val databaseReference = FirebaseDatabase.getInstance().reference
+
 
     private val mEventListener = object : ChildEventListener {
         override fun onCancelled(p0: DatabaseError) {
@@ -102,18 +105,58 @@ class QuestionDetailActivity : AppCompatActivity() {
                 .child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
 
-        mFavoriteRef = databaseReference.child(FavoritePATH).child(currentUser!!.uid)
-        mFavoriteRef.addChildEventListener(mFavoriteEventListener)
+        if (currentUser != null) {
+            mFavoriteRef = databaseReference.child(FavoritePATH).child(currentUser!!.uid)
+            mFavoriteRef.addChildEventListener(mFavoriteEventListener)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_question_detail_favorite, menu)
 
+        favoriteIcon = menu!!.findItem(R.id.favoriteIcon)
+
+        // Favoriteボタンの見た目を設定
+        // TODO 初期表示時に、お気に入りであっても星が中抜きになってる（２回目以降ならちゃんと表示される）
+        setFavoriteButton()
+
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // ログインして帰ってきた場合(Favorite, mFavoriteRef初期化済み）はFavoriteボタンを設定し直す
+        if (this::favoriteIcon.isInitialized) {
+
+            val currentUser = FirebaseAuth.getInstance().currentUser
+
+            mFavoriteRef = databaseReference.child(FavoritePATH).child(currentUser!!.uid)
+
+            mFavoriteRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val map = dataSnapshot.value as Map<String, String>
+                    if (map.containsKey(mQuestion.questionUid)) {
+                        isFavoriteQuestion = true
+                        setFavoriteButton()
+                    }
+                }
+            })
+        }
+    }
+
+
+    // ツールバー上のFavoriteボタンの見た目を設定する
+    private fun setFavoriteButton() {
+
         val currentUser = FirebaseAuth.getInstance().currentUser
 
-        val favoriteIcon = menu!!.findItem(R.id.favoriteIcon)
         if (currentUser?.uid != null) {
+
             // ログインしているのでお気に入りアイコンを表示する
             favoriteIcon.isVisible = true
 
@@ -127,8 +170,6 @@ class QuestionDetailActivity : AppCompatActivity() {
             // ログインしていないのでお気に入り表示はしない
             favoriteIcon.isVisible = false
         }
-
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -157,24 +198,26 @@ class QuestionDetailActivity : AppCompatActivity() {
     }
 
     private val mFavoriteEventListener = object : ChildEventListener {
+
         override fun onCancelled(databaseError: DatabaseError) {
         }
 
-        override fun onChildMoved(databaseSnapshot: DataSnapshot, s: String?) {
+        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
         }
 
-        override fun onChildChanged(databaseSnapshot: DataSnapshot, s: String?) {
+        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
         }
 
-        override fun onChildAdded(databaseSnapshot: DataSnapshot, s: String?) {
+        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
             // Firebaseに今の表示している質問がお気に入り登録されていれば、お気に入りフラグを立てる
-            if (databaseSnapshot.key == mQuestion.questionUid) {
+            if (dataSnapshot.key == mQuestion.questionUid) {
                 isFavoriteQuestion = true
             }
         }
 
-        override fun onChildRemoved(databaseSnapshot: DataSnapshot) {
+        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
             isFavoriteQuestion = false
+
         }
 
 
