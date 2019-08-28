@@ -118,7 +118,6 @@ class QuestionDetailActivity : AppCompatActivity() {
         favoriteIcon = menu!!.findItem(R.id.favoriteIcon)
 
         // Favoriteボタンの見た目を設定
-        // TODO 初期表示時に、お気に入りであっても星が中抜きになってる（２回目以降ならちゃんと表示される）
         setFavoriteButton()
 
         return true
@@ -174,6 +173,7 @@ class QuestionDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            // お気に入りボタンを押した時の処理
             R.id.favoriteIcon -> {
 
                 if (isFavoriteQuestion) {

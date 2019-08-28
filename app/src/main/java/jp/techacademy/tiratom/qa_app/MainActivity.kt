@@ -93,32 +93,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-            var map = dataSnapshot.value as Map<String, String>
-
-            // お気に入り選択時は、該当質問のデータを取得してくる
-            if (mGenre == FavoriteGenre) {
-                val targetQuestionRef = mDatabaseReference
-                    .child(ContentsPATH)
-                    .child(map[GenreKey] ?: "0")
-                    .child(dataSnapshot.key ?: error(""))
-
-                targetQuestionRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                    override fun onCancelled(databaseError: DatabaseError) {
-                    }
-
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        map = dataSnapshot.value as Map<String, String>
-                        setQuestionArrayData(map, dataSnapshot.key!!)
-                    }
-                })
-
-            }
             // お気に入り解除されたデータの削除
-            for(mQuestionArrayElement in mQuestionArrayList) {
-                if (mQuestionArrayElement.questionUid == dataSnapshot.key) {
-                    mQuestionArrayList.remove(mQuestionArrayElement)
-                }
-            }
+            mQuestionArrayList.toList().forEach { if (it.questionUid == dataSnapshot.key) mQuestionArrayList.remove(it) }
 
             mAdapter.notifyDataSetChanged()
         }
@@ -191,13 +167,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        // TODO ログイン有無で変更
-        if (user == null) {
-
-        } else {
-
-        }
-
         // ナビゲーションドロワーの設定
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         val toggle = ActionBarDrawerToggle(this, drawer, mToolbar, R.string.app_name, R.string.app_name)
@@ -205,6 +174,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            // ナビゲーションメニューに「お気に入り」を追加する
+            navigationView.inflateMenu(R.menu.activity_main_drawer_favorite)
+        }
+        // 通常のナビゲーションメニューの設定
+        navigationView.inflateMenu(R.menu.activity_main_drawer)
+
         navigationView.setNavigationItemSelectedListener(this)
 
         mDatabaseReference = FirebaseDatabase.getInstance().reference
@@ -221,8 +198,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra("question", mQuestionArrayList[position])
             startActivity(intent)
         }
-
-
     }
 
     override fun onResume() {
