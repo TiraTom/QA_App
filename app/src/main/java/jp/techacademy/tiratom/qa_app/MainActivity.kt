@@ -22,6 +22,13 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+
+
+    //TODO ログイン状態で開始ー＞ログアウトー＞お気に入りリストに移動　の時にException起きるのでそれを修正
+
+
+
+
     private lateinit var mToolbar: Toolbar
     private var mGenre = 0
 
@@ -203,6 +210,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            // ナビゲーションメニューの設定。ログイン後なので「お気に入り」も追加する
+            navigationView.menu.clear()
+            navigationView.inflateMenu(R.menu.activity_main_drawer_favorite)
+            navigationView.inflateMenu(R.menu.activity_main_drawer)
+
+        } else {
+            // 「お気に入り」を削除したナビゲーションメニューの設定を行う
+            navigationView.menu.clear()
+            navigationView.inflateMenu(R.menu.activity_main_drawer)
+        }
+
+
 
         // 1:趣味を既定の選択とする
         if (mGenre == 0) {
