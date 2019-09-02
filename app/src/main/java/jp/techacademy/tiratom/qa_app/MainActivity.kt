@@ -22,13 +22,6 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-
-
-    //TODO ログイン状態で開始ー＞ログアウトー＞お気に入りリストに移動　の時にException起きるのでそれを修正
-
-
-
-
     private lateinit var mToolbar: Toolbar
     private var mGenre = 0
 
@@ -181,14 +174,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
-
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            // ナビゲーションメニューに「お気に入り」を追加する
-            navigationView.inflateMenu(R.menu.activity_main_drawer_favorite)
-        }
-        // 通常のナビゲーションメニューの設定
-        navigationView.inflateMenu(R.menu.activity_main_drawer)
-
         navigationView.setNavigationItemSelectedListener(this)
 
         mDatabaseReference = FirebaseDatabase.getInstance().reference
@@ -199,7 +184,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mQuestionArrayList = ArrayList<Question>()
         mAdapter.notifyDataSetChanged()
 
-        mListView.setOnItemClickListener { parent, view, position, id ->
+        mListView.setOnItemClickListener { _, _, position, _ ->
             // Questionのインスタンスを渡して質問詳細画面を起動する
             val intent = Intent(applicationContext, QuestionDetailActivity::class.java)
             intent.putExtra("question", mQuestionArrayList[position])
@@ -221,11 +206,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // 「お気に入り」を削除したナビゲーションメニューの設定を行う
             navigationView.menu.clear()
             navigationView.inflateMenu(R.menu.activity_main_drawer)
+
+            if (mGenre == FavoriteGenre) {
+                // 未ログイン状態の場合は、1:趣味を既定の選択とする
+                onNavigationItemSelected(navigationView.menu.findItem(R.id.nav_hobby))
+            }
         }
 
-
-
-        // 1:趣味を既定の選択とする
+        // ジャンル未選択時は、1:趣味を既定の選択とする
         if (mGenre == 0) {
             onNavigationItemSelected(navigationView.menu.getItem(0))
         }
@@ -240,16 +228,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        val id = item.itemId
+        if (FirebaseAuth.getInstance().currentUser == null) {
 
-        if (id == R.id.action_settings) {
-            val intent = Intent(applicationContext, SettingActivity::class.java)
+            val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
             return true
+
+        } else {
+            val id = item.itemId
+
+            if (id == R.id.action_settings) {
+                val intent = Intent(applicationContext, SettingActivity::class.java)
+                startActivity(intent)
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
-
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
